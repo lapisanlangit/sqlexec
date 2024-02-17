@@ -62,9 +62,22 @@ If you are using dot env file :
 
 This is sample single sql statement 
 
-     const dbsql = require("sqlexec");
- 
-     try {
+    const dbsql = require("sqlexec");
+
+    let dbconfig = {
+        user: "root",
+        password: "psw123",
+        database: "dbtest",
+        connectionLimit : 10,
+        host: "localhost",
+        port:  "3306",
+        timezone:'Asia/Jakarta'
+    };
+    //create connection
+    dbsql.connect(dbconfig);
+
+
+    try {
         //select
         let result=await dbsql.sqlExec("SELECT name,city FROM customer WHERE name=?", ['David']);
         console.log(result)
