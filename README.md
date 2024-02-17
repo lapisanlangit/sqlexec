@@ -32,7 +32,7 @@ so you can trace your sql staement is right or show error if there is any wrong 
 
 # Setup Connection
 
-If you are not using dot env file you can set in your config js file like this :
+If you are not using dot env file you can set in your config.js file and call it in index.js/app.js :
 
     const dbsql = require("sqlexec");
 
