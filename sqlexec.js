@@ -1,7 +1,23 @@
 const mysql = require("mysql");
-var pool = require("./sqlpool");
 const env = process.env.NODE_ENV || "dev";
+const tz = process.env.MYSQL_TIMEZONE || "Asia/Jakarta";
+const port = parseInt(process.env.MYSQL_PORT, 10) || 3306;
+let pool;
 
+//create connection
+exports.connect = function(dbconfig) {
+  const connectionString = {
+    connectionLimit : dbconfig.connectionLimit || process.env.MYSQL_CONNECTIONLIMIT || 10,
+    host: dbconfig.host || process.env.MYSQL_HOST || "localhost",
+    user: dbconfig.user || process.env.MYSQL_USER || "root",
+    password: dbconfig.password || process.env.MYSQL_PASSWORD || "",
+    port: dbconfig.port || port || "3306",
+    database: dbconfig.database || process.env.MYSQL_DATABASE || "test",
+    timezone: dbconfig.timezone || tz,
+  };
+
+  pool = mysql.createPool(connectionString);
+};
 // single query
 exports.sqlExec = function(sql, parameters) {
   return new Promise((resolve, reject) => {
