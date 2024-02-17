@@ -1,0 +1,22 @@
+{
+  "name": "sqlexec",
+  "version": "1.0.0",
+  "description": "Simplifies SQL command with MySQL",
+  "main": "sqlexec.js",
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lapisanlangit/sqlexec"
+  },
+  "author": "umar jati <lapisanlangit@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lapisanlangit/sqlexec/issues"
+  },
+  "homepage": "https://github.com/lapisanlangit/sqlexec#readme",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
+}
