@@ -1,9 +1,8 @@
 # sqlexec
 
-Sqlexec is library for running query in MySQL Database with the easy way.
+Sqlexec is library for running query MySQL Database with nodejs in the easy way.
 
-This is to simplifies coding syntax in write SQL command. You can write single query or
-transaction queries with minimum code and readable syntax. Connection default is using pooling.
+The library will simplifies your coding syntax when write SQL command. You can write single query or transaction queries with a few code and readable syntax. Connection default is using pooling.
 
 # Install
 
@@ -25,11 +24,11 @@ You can use enviroment variable (dot env file) to set database configuration wit
 6. MYSQL_CONNECTIONLIMIT : connection limit for pooling (default : 10)
 7. MYSQL_TIMEZONE : time zone (default : 'Asia/Jakarta')
 
-If you can add variable node env (dot env file) with 'dev' mode, you can see log sql statement in terminal during development
+If you  add variable node env (dot env file) with 'dev' mode, you can see log sql statement in terminal during development
 
 NODE_ENV = dev
 
-so you can trace your sql staement is right and show error there is any wrong syntax.
+so you can trace your sql staement is right or show error if there is any wrong syntax.
 
 # Setup Connection
 
@@ -39,16 +38,23 @@ If you are not using dot env file you can set in your config js file like this :
 
     let dbconfig = {
         user: "root",
-        password: "pws123",
+        password: "psw123",
         database: "dbtest",
+        connectionLimit : 10,
+        host: "localhost",
+        port:  "3306",
+        timezone:'Asia/Jakarta'
     };
+    //create connection
     dbsql.connect(dbconfig);
 
 If you are using dot env file :
 
     const dbsql = require("sqlexec");  
- 
+    
+    //empty object
     let dbconfig = {};
+    //create connection
     dbsql.connect(dbconfig);
 
 
@@ -60,7 +66,7 @@ This is sample single sql statement
  
      try {
         //select
-        let result=dbsql.sqlExec("SELECT name,city FROM customer WHERE name=?", ['David']);
+        let result=await dbsql.sqlExec("SELECT name,city FROM customer WHERE name=?", ['David']);
         console.log(result)
 
      } catch(err){
@@ -71,7 +77,7 @@ This is sample single sql statement
         //insert
         let sql="INSERT INTO customer(name,city) VALUES(?,?)";
         let param=['Andy','Jakarta'];
-        dbsql.sqlExec(sql,param);
+        await dbsql.sqlExec(sql,param);
 
      } catch(err) {
         console.log(err)
@@ -81,7 +87,7 @@ This is sample single sql statement
 
 # Transaction SQL Command First Methode 
 
-This methode you will use session variable to link betweeen many sql statemnt, and retrieve some data that can be used to next query
+This methode you will use session variable to link all sql statement, also you can retrieve some data that can be used to next query
     
     const dbsql = require("sqlexec");
 
@@ -92,6 +98,7 @@ This methode you will use session variable to link betweeen many sql statemnt, a
         //statement one to retrieve data
         let sql1 = "SELECT name FROM customer WHERE id=?";
         let sqlResult= await dbsql.execTrans(session, sql1, [59]);
+        console.log(sqlResult)
         
         //statement two, data retrieve will be inserted into other other table
         let sql2 = "INSERT INTO purchase(namecustomer) VALUES(?)";
@@ -109,7 +116,7 @@ if you will rollback transaction you can use
 
 # Transaction SQL Command Second Methode
 
-This methode you are not using session, all sql statement will be set into array and execute all statement. This methode suitable for insert table with large data or delete from many tables 
+This methode you are not using session, all sql statement will be set into array and execute all statement. This methode suitable for insert table with large data or delete  datafrom many tables. You cannot get return result using this methode. 
 
     const dbsql = require("sqlexec");
    
@@ -126,7 +133,7 @@ This methode you are not using session, all sql statement will be set into array
         console.log(err)
     }
 
-
+You cannot stick with methode one and not using methode two, this is up to you.
 
 ## Methods
 
@@ -142,5 +149,5 @@ This methode you are not using session, all sql statement will be set into array
 
 - **rollbackTrans**() rollback transaction and close session.
 
-- **sqlExec**(< object > {query:< string > sql statement, parameters:< array > value param }).
+- **sqlExecTrans**(< object > {query:< string > sql statement, parameters:< array > value param }).
 
