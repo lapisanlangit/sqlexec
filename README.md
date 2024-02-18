@@ -24,7 +24,7 @@ You can use enviroment variable (dot env file) to set database configuration wit
 6. MYSQL_CONNECTIONLIMIT : connection limit for pooling (default : 10)
 7. MYSQL_TIMEZONE : time zone (default : 'Asia/Jakarta')
 
-If you  add variable node env (dot env file) with 'dev' mode, you can see log sql statement in terminal during development
+If you add variable node env (dot env file) with 'dev' mode, you can see log sql statement in terminal during development
 
 NODE_ENV = dev
 
@@ -50,17 +50,16 @@ If you are not using dot env file you can set in your config.js file and call it
 
 If you are using dot env file :
 
-    const dbsql = require("sqlexec");  
-    
+    const dbsql = require("sqlexec");
+
     //empty object
     let dbconfig = {};
     //create connection
     dbsql.connect(dbconfig);
 
-
 # Singe SQL Command
 
-This is sample single sql statement 
+This is sample single sql statement
 
     const dbsql = require("sqlexec");
 
@@ -85,7 +84,7 @@ This is sample single sql statement
      } catch(err){
         console.log(err)
      }
-       
+
      try {
         //insert
         let sql="INSERT INTO customer(name,city) VALUES(?,?)";
@@ -95,29 +94,27 @@ This is sample single sql statement
      } catch(err) {
         console.log(err)
      }
-     
-    
 
-# Transaction SQL Command First Methode 
+# Transaction SQL Command First Methode
 
 This methode you will use session variable to link all sql statement, also you can retrieve some data that can be used to next query
-    
+
     const dbsql = require("sqlexec");
 
     try {
-        //create session to begin transaction 
+        //create session to begin transaction
         let session = await dbsql.beginTrans();
-        
+
         //statement one to retrieve data
         let sql1 = "SELECT name FROM customer WHERE id=?";
         let sqlResult= await dbsql.execTrans(session, sql1, [59]);
         console.log(sqlResult)
-        
+
         //statement two, data retrieve will be inserted into other other table
         let sql2 = "INSERT INTO purchase(namecustomer) VALUES(?)";
         await dbsql.execTrans(session, sql2, [sqlResult[0].name]);
-        
-        //commit transaction 
+
+        //commit transaction
         await dbsql.commitTrans(session);
     } catch(err){
         console.log(err)
@@ -129,19 +126,19 @@ if you will rollback transaction you can use
 
 # Transaction SQL Command Second Methode
 
-This methode you are not using session, all sql statement will be set into array and execute all statement. This methode suitable for insert table with large data or delete  datafrom many tables. You cannot get return result using this methode. 
+This methode you are not using session, all sql statement will be set into array and execute all statement. This methode suitable for insert table with large data or delete datafrom many tables. You cannot get return result using this methode.
 
     const dbsql = require("sqlexec");
-   
+
     //insert table with many records
     try{
         let sqls = [];
-    
+
         sqls.push({query: "INSERT INTO customer(name,address) VALUES(?,?)",parameters:['Andy','New York']})
         sqls.push({query: "INSERT INTO customer(name,address) VALUES(?,?)",parameters:['Andrew','California']});
 
         await dbsql.sqlExecTrans(sqls);
-    
+
     } catch(err){
         console.log(err)
     }
@@ -163,4 +160,3 @@ You cannot stick with methode one and not using methode two, this is up to you.
 - **rollbackTrans**() rollback transaction and close session.
 
 - **sqlExecTrans**(< object > {query:< string > sql statement, parameters:< array > value param }).
-
