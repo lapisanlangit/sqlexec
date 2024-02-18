@@ -1,6 +1,6 @@
 {
   "name": "sqlexec",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Simplifies SQL command with MySQL",
   "main": "sqlexec.js",
   "scripts": {

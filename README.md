@@ -126,7 +126,7 @@ if you will rollback transaction you can use
 
 # Transaction SQL Command Second Methode
 
-This methode you are not using session, all sql statement will be set into array and execute all statement. This methode suitable for insert table with large data or delete datafrom many tables. You cannot get return result using this methode.
+This methode you are not using session, all sql statement will be set into array and execute all statement. This methode suitable for insert table with large data or delete data from many tables. For your information you cannot get return result using this methode.
 
     const dbsql = require("sqlexec");
 
@@ -143,7 +143,7 @@ This methode you are not using session, all sql statement will be set into array
         console.log(err)
     }
 
-You cannot stick with methode one and not using methode two, this is up to you.
+You can stick with methode one for using insert large data set and not using methode two, this is up to you.
 
 ## Methods
 
