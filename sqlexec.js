@@ -38,6 +38,9 @@ exports.sqlExec = function (sql, parameters) {
       connection.query(querySQL, (err, results, fields) => {
         connection.release();
         if (err) {
+          if (env == "dev" || env == "development" || env == "devel") {
+            console.log("\x1b[31m", err.sqlMessage, " - ", err.code);
+          }
           reject({
             message: err.sqlMessage || err.code,
           });
@@ -55,6 +58,9 @@ exports.beginTrans = function () {
     pool.getConnection(function (err, connection) {
       connection.beginTransaction(function (err) {
         if (err) {
+          if (env == "dev" || env == "development" || env == "devel") {
+            console.log("\x1b[31m", err.sqlMessage, " - ", err.code);
+          }
           reject({
             message: err.sqlMessage || err.code,
           });
@@ -75,6 +81,9 @@ exports.execTrans = function (connection, sql, parameters) {
     var querySQL = mysql.format(sql, parameters);
     var query = connection.query(querySQL, function (err, result) {
       if (err) {
+        if (env == "dev" || env == "development" || env == "devel") {
+          console.log("\x1b[31m", err.sqlMessage, " - ", err.code);
+        }
         reject({
           message: err.sqlMessage || err.code,
         });
@@ -94,6 +103,9 @@ exports.commitTrans = function (connection) {
   return new Promise((resolve, reject) => {
     connection.commit(function (err) {
       if (err) {
+        if (env == "dev" || env == "development" || env == "devel") {
+          console.log("\x1b[31m", err.sqlMessage, " - ", err.code);
+        }
         reject({
           message: err.sqlMessage || err.code,
         });
@@ -113,6 +125,9 @@ exports.rollbackTrans = function (connection) {
   return new Promise((resolve, reject) => {
     connection.rollback(function (err) {
       if (err) {
+        if (env == "dev" || env == "development" || env == "devel") {
+          console.log("\x1b[31m", err.sqlMessage, " - ", err.code);
+        }
         reject({
           message: err.sqlMessage || err.code,
         });
@@ -172,6 +187,9 @@ function prosesSQL(connection, sql, reject, ressql, queryId, callback) {
     }
 
     if (err) {
+      if (env == "dev" || env == "development" || env == "devel") {
+        console.log("\x1b[31m", err.sqlMessage, " - ", err.code);
+      }
       connection.rollback();
       connection.release();
       if (env == "dev" || env == "development" || env == "devel") {
