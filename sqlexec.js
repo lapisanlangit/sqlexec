@@ -5,9 +5,10 @@ const port = parseInt(process.env.MYSQL_PORT, 10) || 3306;
 let pool;
 
 //create connection
-exports.connect = function(dbconfig) {
+exports.connect = function (dbconfig) {
   const connectionString = {
-    connectionLimit : dbconfig.connectionLimit || process.env.MYSQL_CONNECTIONLIMIT || 10,
+    connectionLimit:
+      dbconfig.connectionLimit || process.env.MYSQL_CONNECTIONLIMIT || 10,
     host: dbconfig.host || process.env.MYSQL_HOST || "localhost",
     user: dbconfig.user || process.env.MYSQL_USER || "root",
     password: dbconfig.password || process.env.MYSQL_PASSWORD || "",
@@ -19,12 +20,12 @@ exports.connect = function(dbconfig) {
   pool = mysql.createPool(connectionString);
 };
 // single query
-exports.sqlExec = function(sql, parameters) {
+exports.sqlExec = function (sql, parameters) {
   return new Promise((resolve, reject) => {
-    pool.getConnection((error, connection) => {
-      if (error) {
+    pool.getConnection((err, connection) => {
+      if (err) {
         reject({
-          message: error.sqlMessage || error.code,
+          message: err.sqlMessage || err.code,
         });
         return;
       }
@@ -34,12 +35,12 @@ exports.sqlExec = function(sql, parameters) {
       }
 
       // exec query SQL
-      connection.query(querySQL, (error, results, fields) => {
+      connection.query(querySQL, (err, results, fields) => {
         connection.release();
-        if (error) {
+        if (err) {
           reject({
-            message: error.sqlMessage || error.code,
-          }); //https://github.com/mysqljs/mysql#error-handling
+            message: err.sqlMessage || err.code,
+          });
           return;
         }
         resolve(results);
@@ -49,10 +50,10 @@ exports.sqlExec = function(sql, parameters) {
 };
 
 //transaction
-exports.beginTrans = function() {
+exports.beginTrans = function () {
   return new Promise((resolve, reject) => {
-    pool.getConnection(function(err, connection) {
-      connection.beginTransaction(function(err) {
+    pool.getConnection(function (err, connection) {
+      connection.beginTransaction(function (err) {
         if (err) {
           reject({
             message: err.sqlMessage || err.code,
@@ -69,13 +70,13 @@ exports.beginTrans = function() {
   });
 };
 
-exports.execTrans = function(connection, sql, parameters) {
+exports.execTrans = function (connection, sql, parameters) {
   return new Promise((resolve, reject) => {
     var querySQL = mysql.format(sql, parameters);
-    var query = connection.query(querySQL, function(error, result) {
-      if (error) {
+    var query = connection.query(querySQL, function (err, result) {
+      if (err) {
         reject({
-          message: error.sqlMessage || error.code,
+          message: err.sqlMessage || err.code,
         });
         return;
       }
@@ -89,12 +90,12 @@ exports.execTrans = function(connection, sql, parameters) {
   });
 };
 
-exports.commitTrans = function(connection) {
+exports.commitTrans = function (connection) {
   return new Promise((resolve, reject) => {
-    connection.commit(function(err) {
+    connection.commit(function (err) {
       if (err) {
         reject({
-          message: error.sqlMessage || error.code,
+          message: err.sqlMessage || err.code,
         });
         return;
       }
@@ -108,12 +109,12 @@ exports.commitTrans = function(connection) {
   });
 };
 
-exports.rollbackTrans = function(connection) {
+exports.rollbackTrans = function (connection) {
   return new Promise((resolve, reject) => {
-    connection.rollback(function(err) {
+    connection.rollback(function (err) {
       if (err) {
         reject({
-          message: error.sqlMessage || error.code,
+          message: err.sqlMessage || err.code,
         });
         return;
       }
@@ -128,7 +129,7 @@ exports.rollbackTrans = function(connection) {
 };
 
 // multi SQL with transaction
-exports.sqlExecTrans = function(queries) {
+exports.sqlExecTrans = function (queries) {
   var paramCount = queries.length - 1;
   return new Promise((resolve, reject) => {
     var ressql = [];
@@ -162,15 +163,7 @@ exports.sqlExecTrans = function(queries) {
 };
 
 // fungsi proses sql, callback
-function prosesSQL(
-  connection,
-  sql,
-  resolve,
-  reject,
-  ressql,
-  queryId,
-  callback,
-) {
+function prosesSQL(connection, sql, reject, ressql, queryId, callback) {
   var query = connection.query(sql, (err, results, fields) => {
     if (env == "dev" || env == "development" || env == "devel") {
       console.log("\x1b[36m", query.sql);
@@ -185,7 +178,7 @@ function prosesSQL(
         console.log("rollback");
       }
       reject({
-        message: err.sqlMessage || error.code,
+        message: err.sqlMessage || err.code,
       });
       return;
     }
