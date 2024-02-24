@@ -5,7 +5,7 @@ const port = parseInt(process.env.MYSQL_PORT, 10) || 3306;
 let pool;
 
 //create connection
-exports.connect = function(dbconfig) {
+exports.connect = function (dbconfig) {
   const connectionString = {
     connectionLimit:
       dbconfig.connectionLimit || process.env.MYSQL_CONNECTIONLIMIT || 10,
@@ -18,9 +18,10 @@ exports.connect = function(dbconfig) {
   };
 
   pool = mysql.createPool(connectionString);
+  return pool;
 };
 // single query
-exports.sqlExec = function(sql, parameters) {
+exports.sqlExec = function (sql, parameters) {
   return new Promise((resolve, reject) => {
     pool.getConnection((err, connection) => {
       if (err) {
@@ -57,10 +58,10 @@ exports.sqlExec = function(sql, parameters) {
 };
 
 //transaction
-exports.beginTrans = function() {
+exports.beginTrans = function () {
   return new Promise((resolve, reject) => {
-    pool.getConnection(function(err, connection) {
-      connection.beginTransaction(function(err) {
+    pool.getConnection(function (err, connection) {
+      connection.beginTransaction(function (err) {
         if (err) {
           if (env == "dev" || env == "development" || env == "devel") {
             console.log("\x1b[31m", err.sqlMessage, " - ", err.code);
@@ -80,10 +81,10 @@ exports.beginTrans = function() {
   });
 };
 
-exports.execTrans = function(connection, sql, parameters) {
+exports.execTrans = function (connection, sql, parameters) {
   return new Promise((resolve, reject) => {
     var querySQL = mysql.format(sql, parameters);
-    var query = connection.query(querySQL, function(err, result) {
+    var query = connection.query(querySQL, function (err, result) {
       if (err) {
         if (env == "dev" || env == "development" || env == "devel") {
           console.log("\x1b[31m", err.sqlMessage, " - ", err.code);
@@ -102,9 +103,9 @@ exports.execTrans = function(connection, sql, parameters) {
   });
 };
 
-exports.commitTrans = function(connection) {
+exports.commitTrans = function (connection) {
   return new Promise((resolve, reject) => {
-    connection.commit(function(err) {
+    connection.commit(function (err) {
       if (err) {
         if (env == "dev" || env == "development" || env == "devel") {
           console.log("\x1b[31m", err.sqlMessage, " - ", err.code);
@@ -124,9 +125,9 @@ exports.commitTrans = function(connection) {
   });
 };
 
-exports.rollbackTrans = function(connection) {
+exports.rollbackTrans = function (connection) {
   return new Promise((resolve, reject) => {
-    connection.rollback(function(err) {
+    connection.rollback(function (err) {
       if (err) {
         if (env == "dev" || env == "development" || env == "devel") {
           console.log("\x1b[31m", err.sqlMessage, " - ", err.code);
@@ -147,7 +148,7 @@ exports.rollbackTrans = function(connection) {
 };
 
 // multi SQL with transaction
-exports.sqlExecTrans = function(queries) {
+exports.sqlExecTrans = function (queries) {
   var paramCount = queries.length - 1;
   return new Promise((resolve, reject) => {
     var ressql = [];

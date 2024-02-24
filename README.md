@@ -46,7 +46,9 @@ If you are not using dot env file you can set in your config.js file and call it
         timezone:'Asia/Jakarta'
     };
     //create connection
-    dbsql.connect(dbconfig);
+    let con=dbsql.connect(dbconfig);
+    //you can check connection object if needed
+    console.log(con)
 
 If you are using dot env file :
 
@@ -55,7 +57,9 @@ If you are using dot env file :
     //empty object
     let dbconfig = {};
     //create connection
-    dbsql.connect(dbconfig);
+    let con=dbsql.connect(dbconfig);
+    //you can check connection object if needed
+    console.log(con)
 
 # Singe SQL Command
 
@@ -147,7 +151,7 @@ You can stick with methode one for using insert large data set and not using met
 
 ## Methods
 
-- **connect**(< object > configuration).
+- **connect**(< object > configuration, return is connection object).
 
 - **sqlExec**(< string > sql statemtent, < array > value param), return is query result.
 
